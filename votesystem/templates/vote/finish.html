@@ -1,0 +1,28 @@
+{% extends 'vote/layout.html' %}
+{%block title%}
+VoteSystem
+{%endblock%}
+
+{%block content%}
+    <body>
+        <h3>투표가 완료되었습니다</h3>
+        <table class="table">
+            <tr class="thead-light">
+                <th>번호</th>
+                <th>이름</th>
+                <th>지역</th>
+                <th>득표수</th>
+            </tr>
+            {%for vote in votes%}
+            <tr>
+                <td>{{vote.can_id.id}}</td>
+                <td>{{vote.can_id.name}}</td>
+                <td><a href="/vote/{{vote.can_id.area}}">{{vote.can_id.area}}</a></td>
+                <td>{{vote.vote_count}}</td>
+            </tr>
+            {%endfor%}
+        </table>
+    </body> 
+{%endblock%}
+
+

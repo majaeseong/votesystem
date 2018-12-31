@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>vote</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <table class="table">
+            <tr class="thead-light">
+                <th>번호</th>
+                <th>이름</th>
+                <th>지역</th>
+                <th>투표하기</th>
+            </tr>
+            {%for vote in votes%}
+            <tr>
+                <td>{{vote.can_id.id}}</td>
+                <td>{{vote.can_id.name}}</td>
+                <td><a href="{{vote.can_id.area}}">{{vote.can_id.area}}</a></td>
+                <td><button onclick="location.href='select/{{vote.id}}'" class="btn btn-outline-info btn-sm">Vote</button></td>
+            </tr>
+            {%endfor%}
+        </table>
+    </body>
+</html>

@@ -1,0 +1,50 @@
+{% extends 'vote/layout.html' %}
+{%block title%}
+VoteSystem
+{%endblock%}
+
+{%block content%}
+    <body>
+        <table class="table">
+            <tr class="thead-light">
+                <th>번호</th>
+                <th>지역</th>
+                <th>시작일</th>
+                <th>종료일</th>
+            </tr>
+            {%for poll in polls%}
+            <tr>
+                <td>{{poll.id}}</td>
+                <td><a href="{{poll.area}}/{{poll.id}}">{{poll.area}}</a></td>
+                <td>{{poll.start_date}}</td>
+                <td>{{poll.end_date}}</td>
+            </tr>
+            {%endfor%}
+        </table>
+
+
+        {% if messages %}
+            {% for message in messages %}
+                <input type='hidden' value={{message}} id="msg">
+            {% endfor %}
+        {% endif %}
+
+        <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+        <script>
+        $(document).ready(function() {
+            var msg = $('#msg')
+            if(msg.length >0){
+                Toastify({
+                text: msg.val(),
+                close: true,
+                autoClose:5000,
+                gravity: "top-center", // `top` or `bottom`
+                positionLeft: true, // `true` or `false`
+                backgroundColor: "linear-gradient(to right, #0099FF, #D6EAF8)",
+                }).showToast();
+            }
+        });
+        </script>
+    </body>
+{%endblock%}
+

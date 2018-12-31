@@ -1,0 +1,39 @@
+{% extends 'vote/layout.html' %}
+{%block title%}
+Add Candidate
+{%endblock%}
+
+{%block content%}
+    <body>
+        <h3>후보 등록</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">save</button>
+        </form>
+
+        {% if messages %}
+            {% for message in messages %}
+                <input type='hidden' value={{message}} id="msg">
+            {% endfor %}
+        {% endif %}
+
+        <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+        <script>
+        $(document).ready(function() {
+            var msg = $('#msg')
+            if(msg.length >0){
+                Toastify({
+                text: msg.val(),
+                close: true,
+                autoClose:5000,
+                gravity: "top-center", // `top` or `bottom`
+                positionLeft: true, // `true` or `false`
+                backgroundColor: "linear-gradient(to right, #0099FF, #D6EAF8)",
+                }).showToast();
+            }
+        });
+        </script>
+    </body>
+{%endblock%}
+

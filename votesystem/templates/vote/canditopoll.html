@@ -1,0 +1,91 @@
+{% extends 'vote/layout.html' %}
+{%block title%}
+Candi to Poll
+{%endblock%}
+
+{%block content%}
+    <body>
+        <h3>지역을 잘 보고 선택해주세요.</h3>
+        
+        <form method="POST">
+            <table class="table">
+                <tr class="thead-light">
+                    <th>후보자</th>
+                    <th>투표</th>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="candi">
+                            <option value=0>후보를 선택하세요.</option>
+                            {%for candi in candis%}
+                            <option value={{candi.id}}>{{candi.name}}-{{candi.area}}</option>
+                            {%endfor%}
+                        </select>
+                    </td>
+                    <td>
+                        <select name='poll'>
+                           
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            {% csrf_token %}
+            <button type="submit" onclick="return check_selects()">Save</button>
+        </form>
+
+
+        {% if messages %}
+            {% for message in messages %}
+                <input type='hidden' value={{message}} id="msg">
+            {% endfor %}
+        {% endif %}
+
+        <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                var msg = $('#msg')
+                if(msg.length >0){
+                    Toastify({
+                    text: msg.val(),
+                    close: true,
+                    autoClose:5000,
+                    gravity: "top-center", // `top` or `bottom`
+                    positionLeft: true, // `true` or `false`
+                    backgroundColor: "linear-gradient(to right, #0099FF, #D6EAF8)",
+                    }).showToast();
+                }
+
+                $('select[name=candi]').change(function(){
+                    id = $(this).val();
+                    request_url = 'getpolls/' + id;
+                    $.ajax({
+                        url: request_url,
+                        success: function(data){
+                            
+                            $.each(data, function(key, value){
+                                $('select[name=poll]').empty();
+                                $('select[name=poll]').append('<option value="' + key + '">' + value +'</option>');
+                            });
+                        }
+                    })
+                })
+            });
+
+            function check_selects(){
+                var can = $('select[name=candi]').val();
+                var poll = $('select[name=poll]').val();
+
+                if(can==0 || poll==0){
+                    alert('please select!');
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+            
+        </script>
+
+    </body>
+{%endblock%}
+</html>
+
