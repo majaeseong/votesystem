@@ -5,6 +5,7 @@ VoteSystem
 
 {%block content%}
     <body>
+        <h3>진행중인 투표</h3>
         <table class="table">
             <tr class="thead-light">
                 <th>번호</th>
@@ -12,7 +13,25 @@ VoteSystem
                 <th>시작일</th>
                 <th>종료일</th>
             </tr>
-            {%for poll in polls%}
+            {%for poll in polls_ing%}
+            <tr>
+                <td>{{poll.id}}</td>
+                <td><a href="{{poll.area}}/{{poll.id}}">{{poll.area}}</a></td>
+                <td>{{poll.start_date}}</td>
+                <td>{{poll.end_date}}</td>
+            </tr>
+            {%endfor%}
+        </table>
+
+        <h3>종료된 투표</h3>
+        <table class="table">
+            <tr class="thead-light">
+                <th>번호</th>
+                <th>지역</th>
+                <th>시작일</th>
+                <th>종료일</th>
+            </tr>
+            {%for poll in polls_end%}
             <tr>
                 <td>{{poll.id}}</td>
                 <td><a href="{{poll.area}}/{{poll.id}}">{{poll.area}}</a></td>

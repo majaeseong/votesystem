@@ -11,8 +11,10 @@ from django.db.models import Sum
 # Create your views here.
 class Vote_main(TemplateView):
     def get(self, request):
-        polls = models.Poll.objects.all()
-        context = {"polls":polls}
+        today=datetime.now().date()
+        polls_ing = models.Poll.objects.filter(end_date__gte=today).order_by('-id')
+        polls_end = models.Poll.objects.filter(end_date__lt=today).order_by('-id')
+        context = {"polls_ing":polls_ing,"polls_end":polls_end}
         return render(request, 'vote/index.html',context)
 
 class Add_candi(TemplateView):
@@ -93,10 +95,8 @@ class Add_poll(TemplateView):
 
 class Candi_to_poll(TemplateView):
     def get(self, request):
-        candis = models.Candidate.objects.all()
-        today=datetime.now()
-        polls = models.Poll.objects.filter(end_date__gte=today)
-        context={"candis":candis, "polls":polls}
+        candis = models.Candidate.objects.all().order_by('-area')
+        context={"candis":candis}
         return render(request,'vote/canditopoll.html',context)
 
     def post(self,request):
@@ -133,8 +133,14 @@ class Vote_area(TemplateView):
             candi = models.Candidate.objects.get(id=vote.can_for.id)
             list_candis.append(candi)
 
+        poll = models.Poll.objects.get(id=id)
+        today = datetime.now().date()
+        if poll.end_date < today:
+            vote_valid=False
+        else:
+            vote_valid=True
 
-        context={"candis":list_candis, "poll_id":id}
+        context={"candis":list_candis, "poll_id":id, "vote_valid":vote_valid}
         return render(request,'vote/votes.html',context)
 
 class Vote_select(TemplateView):
@@ -146,14 +152,22 @@ class Vote_select(TemplateView):
         messages.info(request,'Success!')
         votes = models.Vote.objects.filter(poll_for__id=poll_id)
 
-        #result=models.Vote.objects.aggregate(vote_sum=Sum('vote_count'))
+        context={"votes":votes}
+        return render(request,'vote/finish.html',context)
+
+class View_result(TemplateView):
+    def get(self, request, poll_id):
+        votes = models.Vote.objects.filter(poll_for__id=poll_id)
+        print('hhhhhhhhhhhhhhhhhhhhhhh')
         context={"votes":votes}
         return render(request,'vote/finish.html',context)
 
 def getPoll(self,id):
     candi = models.Candidate.objects.get(id=id)
     area = candi.area
-    polls = models.Poll.objects.filter(area=area)
+
+    today=datetime.now()
+    polls = models.Poll.objects.filter(area=area, start_date__gt=today)
     list_polls={}
     for po in polls:
         string = po.area + " ( " + str(po.start_date) + " ~ " + str(po.end_date) + " ) "

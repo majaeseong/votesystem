@@ -20,7 +20,14 @@ Vote
                 <td>{{candi.id}}</td>
                 <td>{{candi.name}}</td>
                 <td>{{candi.area}}</td>
-                <td><button onclick="location.href='/vote/select/{{candi.id}}/{{poll_id}}'" class="btn btn-outline-info btn-sm">Vote</button></td>
+                <td>
+                {%if vote_valid%}
+                    <button onclick="location.href='/vote/select/{{candi.id}}/{{poll_id}}'" class="btn btn-outline-info btn-sm">Vote</button>
+                {%else%}
+                    투표가 종료되었습니다.
+                    <button onclick="location.href='/vote/result/{{poll_id}}'" class="btn btn-outline-info btn-sm">결과확인</button>
+                {%endif%}
+                </td>
             </tr>
             {%endfor%}
         </table>
