@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 
 # Create your models here.
 class Candidate(models.Model):
@@ -26,3 +27,8 @@ class Vote(models.Model):
 
     def __str__(self):
         return '{}-{}'.format(self.can_for.name,self.vote_count)
+
+    def avg(self):
+        result = Vote.objects.filter(poll_for__id=self.poll_for.id).aggregate(vote_sum = Sum('vote_count'))
+        avg = self.vote_count/result['vote_sum']
+        return '{0:.2f}'.format(avg)

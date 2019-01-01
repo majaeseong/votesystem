@@ -6,6 +6,7 @@ from . import form
 from django.contrib import messages
 from django.http import HttpResponse
 import json
+from django.db.models import Sum
 
 # Create your views here.
 class Vote_main(TemplateView):
@@ -123,11 +124,31 @@ class Candi_to_poll(TemplateView):
             messages.info(request,'already_registered')
             return redirect('vote:candi_to_poll')
 
+class Vote_area(TemplateView):
+    def get(self, request, area, id):
+        votes = models.Vote.objects.filter(poll_for__id=id)
+        list_candis =[]
+        
+        for vote in votes:
+            candi = models.Candidate.objects.get(id=vote.can_for.id)
+            list_candis.append(candi)
 
-# class Vote_area(TemplateView):
-#     def get(self, request, area, id):
-#         votes=models.Vote.objects.filter(poll_for__id=id)
-#         print(votes)
+
+        context={"candis":list_candis, "poll_id":id}
+        return render(request,'vote/votes.html',context)
+
+class Vote_select(TemplateView):
+    def get(self, request, id, poll_id):
+        vote = models.Vote.objects.get(can_for__id=id, poll_for__id=poll_id)
+        vote.vote_count=vote.vote_count+1
+        vote.save()
+        
+        messages.info(request,'Success!')
+        votes = models.Vote.objects.filter(poll_for__id=poll_id)
+
+        #result=models.Vote.objects.aggregate(vote_sum=Sum('vote_count'))
+        context={"votes":votes}
+        return render(request,'vote/finish.html',context)
 
 def getPoll(self,id):
     candi = models.Candidate.objects.get(id=id)

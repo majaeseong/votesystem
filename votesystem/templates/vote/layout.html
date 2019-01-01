@@ -6,6 +6,30 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     </head>
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href='{%url "vote:main_view"%}'>VoteSystem</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href='{%url "vote:main_view"%}'>Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href='{%url "vote:add_candi"%}'>Add Candi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href='{%url "vote:add_poll"%}'>Add Poll</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href='{%url "vote:candi_to_poll"%}'>Cnadi to Poll</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
     {%block content%}
     {%endblock%}

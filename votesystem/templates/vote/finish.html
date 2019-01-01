@@ -11,17 +11,39 @@ VoteSystem
                 <th>번호</th>
                 <th>이름</th>
                 <th>지역</th>
-                <th>득표수</th>
+                <th>지지율</th>
             </tr>
             {%for vote in votes%}
             <tr>
-                <td>{{vote.can_id.id}}</td>
-                <td>{{vote.can_id.name}}</td>
-                <td><a href="/vote/{{vote.can_id.area}}">{{vote.can_id.area}}</a></td>
-                <td>{{vote.vote_count}}</td>
+                <td>{{vote.can_for.id}}</td>
+                <td>{{vote.can_for.name}}</td>
+                <td>{{vote.can_for.area}}</td>
+                <td>{{vote.avg}}</td>
             </tr>
             {%endfor%}
         </table>
+        {% if messages %}
+            {% for message in messages %}
+                <input type='hidden' value={{message}} id="msg">
+            {% endfor %}
+        {% endif %}
+
+        <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+        <script>
+        $(document).ready(function() {
+            var msg = $('#msg')
+            if(msg.length >0){
+                Toastify({
+                text: msg.val(),
+                close: true,
+                autoClose:5000,
+                gravity: "top-center", // `top` or `bottom`
+                positionLeft: true, // `true` or `false`
+                backgroundColor: "linear-gradient(to right, #0099FF, #D6EAF8)",
+                }).showToast();
+            }
+        });
+        </script>
     </body> 
 {%endblock%}
 
