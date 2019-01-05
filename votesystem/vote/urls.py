@@ -11,5 +11,6 @@ urlpatterns = [
     path("result/<int:poll_id>", view=views.View_result.as_view(),name="result"),
     path("select/<int:id>/<int:poll_id>", view=views.Vote_select.as_view(), name='select'),
     path("<str:area>/<int:id>", view=views.Vote_area.as_view(), name='area'),
-
+    path("admin", view=views.Vote_admin.as_view(), name='admin'),
+    path("getnotis", view=views.getNoti, name='get_noti'), #ajax
 ]

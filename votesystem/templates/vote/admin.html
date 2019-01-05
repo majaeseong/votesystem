@@ -1,0 +1,102 @@
+    <header>
+        <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
+        <style>
+            .heart {
+                margin:10px 0px 0px 10px;
+                background-color: gray;
+                height: 16px;
+                transform: rotate(-45deg);
+                width: 16px;
+                cursor:pointer
+            }
+            .heart:before, .heart:after {
+                content: "";
+                background-color: gray;
+                border-radius: 50%;
+                height: 16px;
+                position: absolute;
+                width: 16px;
+                top:0px;
+                left:8px;
+            }
+            .heart:before {
+                top: -8px;
+                left: 0;
+            }
+            .red, .red:after, .red:before{
+                background-color:red
+            }
+            .gray, .gray:after, .gray:before{
+                background-color: gray
+            }
+            .memo{
+                display:none;
+                width:250px;
+                height:140px;
+                position:absolute;
+                top:40px;
+                overflow:scroll;
+                border: 1px solid #A9BCF5;
+                background-color:white;
+                border-radius:10px;
+                padding:10px 0px 0px 0px;
+            }
+            .memo_one{
+                margin-bottom : 10px;
+                border-bottom : 1px solid #A9BCF5;
+            }
+        </style>
+    </header>
+    <body>
+        <div class="heart" onclick="get_noti(); view_memo()" ></div>
+        <div id="memo" class='memo'>
+            
+        </div> 
+        <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+        <script>
+
+            // Enable pusher logging - don't include this in production
+            $(document).ready(function(){
+                Pusher.logToConsole = true;
+
+                var pusher = new Pusher('dd24723fdc03c087279d', {
+                cluster: 'ap3',
+                forceTLS: true
+                });
+
+                var channel = pusher.subscribe('my-channel');
+                channel.bind('my-event', function(data) {
+                    //var temp = JSON.stringify(data);
+                    $('.heart').addClass('red');
+                });
+
+            });
+            
+        </script>
+
+        <script>
+            function get_noti(){
+                
+                request_url = '/vote/getnotis'
+                $.ajax({
+                    url: request_url,
+                    success: function(data){
+                                $('#memo').empty();
+                                $.each(data, function(key, value){
+                                    
+                                    $('#memo').append('<div class="memo_one">&nbsp;&nbsp;&nbsp;'+value +'</div>');
+                                });
+                                $('.heart').removeClass('red');
+                            }
+                })
+                return false;
+            }
+            function view_memo(){
+                if( $('#memo').css('display')=='none' ){
+                    $('#memo').css('display','block')
+                }else{
+                    $('#memo').css('display','none')
+                }
+            }
+        </script>
+    </body>

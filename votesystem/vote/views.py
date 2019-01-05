@@ -7,8 +7,12 @@ from django.contrib import messages
 from django.http import HttpResponse
 import json
 from django.db.models import Sum
+import pusher
 
 # Create your views here.
+
+
+
 class Vote_main(TemplateView):
     def get(self, request):
         today=datetime.now().date()
@@ -144,6 +148,17 @@ class Vote_area(TemplateView):
         return render(request,'vote/votes.html',context)
 
 class Vote_select(TemplateView):
+    def __pusher(self):
+        pusher_client = pusher.Pusher(
+            app_id='685009',
+            key='dd24723fdc03c087279d',
+            secret='56202d89d190f70d4d58',
+            cluster='ap3',
+            ssl=True
+            )
+
+        pusher_client.trigger('my-channel', 'my-event', {'message': 'push'})
+
     def get(self, request, id, poll_id):
         vote = models.Vote.objects.get(can_for__id=id, poll_for__id=poll_id)
         vote.vote_count=vote.vote_count+1
@@ -153,6 +168,13 @@ class Vote_select(TemplateView):
         votes = models.Vote.objects.filter(poll_for__id=poll_id)
 
         context={"votes":votes}
+        # ▲투표 완료
+        # ▼Noti, pusher
+        can = models.Candidate.objects.get(id=id)
+        msg = can.name+"님이 1표를 받았습니다."
+        message = models.Noti.objects.create(message = msg)
+        self.__pusher()
+
         return render(request,'vote/finish.html',context)
 
 class View_result(TemplateView):
@@ -161,6 +183,10 @@ class View_result(TemplateView):
         print('hhhhhhhhhhhhhhhhhhhhhhh')
         context={"votes":votes}
         return render(request,'vote/finish.html',context)
+
+class Vote_admin(TemplateView):
+    def get(self, request):
+        return render(request,'vote/admin.html')
 
 def getPoll(self,id):
     candi = models.Candidate.objects.get(id=id)
@@ -178,3 +204,20 @@ def getPoll(self,id):
         list_polls[0] = string
     
     return HttpResponse(json.dumps(list_polls), content_type="application/json")
+
+
+def getNoti(self):
+    notis = models.Noti.objects.all()[:10]
+    list_notis={}
+    for noti in notis:
+        list_notis[noti.id] = noti.message
+
+    if len(list_notis)==0:
+        string="Nothing"
+        list_notis[0] = string
+    
+    return HttpResponse(json.dumps(list_notis), content_type="application/json")
+
+
+
+

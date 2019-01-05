@@ -29,3 +29,8 @@ class VoteAdmin(admin.ModelAdmin):
         'vote_count',
     )
     
+@admin.register(models.Noti)
+class NotiAdmin(admin.ModelAdmin):
+    list_display=(
+        'message',
+    )

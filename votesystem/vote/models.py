@@ -32,3 +32,9 @@ class Vote(models.Model):
         result = Vote.objects.filter(poll_for__id=self.poll_for.id).aggregate(vote_sum = Sum('vote_count'))
         avg = self.vote_count/result['vote_sum']
         return '{0:.2f}'.format(avg)
+
+class Noti(models.Model):
+    message=models.CharField(max_length=100)
+
+    def __str__(self):
+        return '{}'.format(self.message)
