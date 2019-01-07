@@ -5,21 +5,29 @@ from django.views.generic import TemplateView
 from . import form
 from django.contrib import messages
 from django.http import HttpResponse
-import json
 from django.db.models import Sum
+import json
 import pusher
 
+
 # Create your views here.
-
-
-
 class Vote_main(TemplateView):
     def get(self, request):
         today=datetime.now().date()
         polls_ing = models.Poll.objects.filter(end_date__gte=today).order_by('-id')
         polls_end = models.Poll.objects.filter(end_date__lt=today).order_by('-id')
         context = {"polls_ing":polls_ing,"polls_end":polls_end}
-        return render(request, 'vote/index.html',context)
+
+        response = render(request, 'vote/index.html',context)
+        print(request.COOKIES)
+        if(len(request.COOKIES)>2):
+            num = request.COOKIES['glob']
+            if(num==None):
+                response.set_cookie('glob',0)
+        else:
+            response.set_cookie('glob',0)
+        
+        return response
 
 class Add_candi(TemplateView):
     def get(self, request):
@@ -166,8 +174,8 @@ class Vote_select(TemplateView):
         
         messages.info(request,'Success!')
         votes = models.Vote.objects.filter(poll_for__id=poll_id)
-
-        context={"votes":votes}
+        
+        
         # ▲투표 완료
         # ▼Noti, pusher
         can = models.Candidate.objects.get(id=id)
@@ -175,12 +183,18 @@ class Vote_select(TemplateView):
         message = models.Noti.objects.create(message = msg)
         self.__pusher()
 
-        return render(request,'vote/finish.html',context)
+        context={"votes":votes}
+        response = render(request, 'vote/finish.html',context)
+
+        num = request.COOKIES['glob']
+        if(num==None or num!=1):
+            response.set_cookie('glob',1)
+
+        return response
 
 class View_result(TemplateView):
     def get(self, request, poll_id):
         votes = models.Vote.objects.filter(poll_for__id=poll_id)
-        print('hhhhhhhhhhhhhhhhhhhhhhh')
         context={"votes":votes}
         return render(request,'vote/finish.html',context)
 
@@ -215,9 +229,8 @@ def getNoti(self):
     if len(list_notis)==0:
         string="Nothing"
         list_notis[0] = string
-    
-    return HttpResponse(json.dumps(list_notis), content_type="application/json")
 
+    response = HttpResponse(json.dumps(list_notis), content_type="application/json")
+    response.set_cookie('glob',0)
 
-
-
+    return response

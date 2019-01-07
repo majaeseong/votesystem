@@ -1,5 +1,7 @@
     <header>
+
         <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.0/js.cookie.min.js"></script>
         <style>
             .heart {
                 margin:10px 0px 0px 10px;
@@ -50,13 +52,22 @@
     <body>
         <div class="heart" onclick="get_noti(); view_memo()" ></div>
         <div id="memo" class='memo'>
-            
         </div> 
-        <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+
+        
         <script>
 
             // Enable pusher logging - don't include this in production
             $(document).ready(function(){
+                
+                var glob = {{request.COOKIES.glob }}
+                if(glob==0 || glob == undefined){
+                    
+                    $('.heart').removeClass('red');
+                }else{
+                    $('.heart').addClass('red');
+                }
+
                 Pusher.logToConsole = true;
 
                 var pusher = new Pusher('dd24723fdc03c087279d', {
@@ -68,8 +79,13 @@
                 channel.bind('my-event', function(data) {
                     //var temp = JSON.stringify(data);
                     $('.heart').addClass('red');
-                });
+                    //document.coockie='glob=1; expires=30; domain=http://127.0.0.1:8000/'
+                    //setcookie('glob',1,new Date(),'/','localhost:8000')
+                    Cookies.set('glob',1,{path:'/'})
+                    //Cookie.set('glob',1)
 
+                });
+                
             });
             
         </script>
