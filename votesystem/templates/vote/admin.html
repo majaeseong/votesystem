@@ -79,10 +79,7 @@
                 channel.bind('my-event', function(data) {
                     //var temp = JSON.stringify(data);
                     $('.heart').addClass('red');
-                    //document.coockie='glob=1; expires=30; domain=http://127.0.0.1:8000/'
-                    //setcookie('glob',1,new Date(),'/','localhost:8000')
                     Cookies.set('glob',1,{path:'/'})
-                    //Cookie.set('glob',1)
 
                 });
                 

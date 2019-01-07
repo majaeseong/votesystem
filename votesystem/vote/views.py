@@ -18,8 +18,8 @@ class Vote_main(TemplateView):
         polls_end = models.Poll.objects.filter(end_date__lt=today).order_by('-id')
         context = {"polls_ing":polls_ing,"polls_end":polls_end}
 
+        #Cookie
         response = render(request, 'vote/index.html',context)
-        print(request.COOKIES)
         if(len(request.COOKIES)>2):
             num = request.COOKIES['glob']
             if(num==None):
@@ -177,7 +177,7 @@ class Vote_select(TemplateView):
         
         
         # ▲투표 완료
-        # ▼Noti, pusher
+        # ▼Noti, pusher, Cookie
         can = models.Candidate.objects.get(id=id)
         msg = can.name+"님이 1표를 받았습니다."
         message = models.Noti.objects.create(message = msg)
@@ -230,6 +230,7 @@ def getNoti(self):
         string="Nothing"
         list_notis[0] = string
 
+    #Cookie
     response = HttpResponse(json.dumps(list_notis), content_type="application/json")
     response.set_cookie('glob',0)
 
